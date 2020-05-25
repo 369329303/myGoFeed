@@ -16,37 +16,48 @@ import (
 
 // GetFeeds 获取Feeds
 func GetFeeds(rClient *redis.Client, urls []string) {
-	feedParser := gofeed.NewParser()
+	parser := gofeed.NewParser()
 	for _, url := range urls {
 		go func(url string) {
-			feed, err := feedParser.ParseURL(url)
+			feed, err := parser.ParseURL(url)
 			if err != nil {
 				log.Fatalln(err)
 			}
-			for _, item := range feed.Items {
-				go func(item *gofeed.Item) {
-					data, err := json.Marshal(item)
+
+			// 获取数据库列表中最新的元素
+			headStr, err := rClient.LIndex(url, 0).Result()
+			if err != nil && err != redis.Nil {
+				log.Fatalln(err)
+			}
+
+			if err == redis.Nil {
+				// 数据库中没有这个键，直接加入
+				for i := len(feed.Items); i >= 0; i-- {
+					data, err := json.Marshal(feed.Items[i])
 					if err != nil {
 						log.Fatalln(err)
 					}
-					baseTime, err := time.Parse(time.RFC1123Z, "Mon, 02 Jan 2006 15:04:05 -0700")
-					if err != nil {
-						log.Println(err)
-					}
-					elapsed := item.PublishedParsed.Sub(baseTime)
-					z := redis.Z{Score: elapsed.Seconds(), Member: data}
+					rClient.LPush(url, data)
+				}
+			} else {
+				// 数据库中有这个键，只加入较新的
+				headItem := &gofeed.Item{}
+				err = json.Unmarshal([]byte(headStr), headItem)
+				if err != nil {
+					log.Fatalln(err)
+				}
 
-					err = rClient.ZAddNX(url, z).Err()
-					if err != nil {
-						r, err := rClient.ZRangeByScore(url, redis.ZRangeBy{Min: "-inf", Max: "+inf", Offset: 0, Count: 10}).Result()
-						if err == nil {
+				for i := len(feed.Items); i >= 0; i-- {
+					if feed.Items[i].PublishedParsed.After(*headItem.PublishedParsed) {
+						data, err := json.Marshal(feed.Items[i])
+						if err != nil {
 							log.Fatalln(err)
 						}
-						fmt.Println(r)
-						fmt.Println(elapsed.Hours())
-						log.Fatalln(err, "------")
+						rClient.LPush(url, data)
+						continue
 					}
-				}(item)
+					break
+				}
 			}
 		}(url)
 	}
@@ -84,14 +95,9 @@ func ReadFeeds(rClient *redis.Client, urls []string) string {
 		go func(url string) {
 			defer wg.Done()
 			// 从每个Feed中取出最新的10条消息
-			zs, err := rClient.ZRevRangeByScore(url, redis.ZRangeBy{
-				Min:    "-inf",
-				Max:    "+inf",
-				Offset: 0,
-				Count:  10,
-			}).Result()
+			zs, err := rClient.LRange(url, 0, 10).Result()
 			if err != nil {
-				log.Println(err)
+				log.Fatalln(err)
 			}
 			stories = append(stories, zs...)
 
@@ -99,6 +105,23 @@ func ReadFeeds(rClient *redis.Client, urls []string) string {
 	}
 	wg.Wait()
 
+	sortStories(stories)
+	for _, story := range stories {
+		var row string
+
+		var item gofeed.Feed
+		err := json.Unmarshal([]byte(story), &item)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		row += fmt.Sprintf("<tr><td><a href='%v'>%v</a></td><td>%v</td></tr>", item.Link, item.Title, item.Published)
+		html += row
+	}
+	html += `</table>`
+	return html
+}
+
+func sortStories(stories []string) {
 	var storyI, storyJ gofeed.Feed
 	// 対合并的Feeds按照时间进行排序
 	sort.Slice(stories, func(i, j int) bool {
@@ -116,19 +139,6 @@ func ReadFeeds(rClient *redis.Client, urls []string) string {
 		return false
 	})
 
-	for _, story := range stories {
-		var row string
-
-		var item gofeed.Feed
-		err := json.Unmarshal([]byte(story), &item)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		row += fmt.Sprintf("<tr><td><a href='%v'>%v</a></td><td>%v</td></tr>", item.Link, item.Title, item.Description)
-		html += row
-	}
-	html += `</table>`
-	return html
 }
 
 // RSSReader 阅读服务
@@ -151,7 +161,7 @@ func main() {
 		for {
 			GetFeeds(rClient, urls)
 			// 每隔5min更新一次数据库
-			time.Sleep(5 * time.Minute)
+			time.Sleep(1 * time.Minute)
 		}
 	}()
 

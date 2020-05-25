@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package feed;
+
+service RSS {
+    rpc GetFeed (Feed) returns (stream Story) {}
+    rpc GetFeedGroup (FeedGroup) returns (stream Story) {}
+    rpc AddFeed (Feed) returns (Status) {}
+    rpc AddFeedGroup (FeedGroup) returns (Status) {}
+    rpc SendFeeds (stream Feed) returns (Status) {}
+    rpc SubscribeAndRefresh (stream Feed) returns (stream Story) {}
+}
+
+message Feed {
+    string Name = 1;
+    int64 Start = 2;
+    int64 End = 3;
+    string StartTime = 4;
+    string EndTime = 5;
+}
+
+message FeedGroup {
+    repeated string FeedNames = 1;
+    int64 Nums = 2;
+    string StartTime = 3;
+    string EndTime = 4;
+}
+
+message Story {
+    string Title = 1;
+    string Link = 2;
+    string Description = 3;
+}
+
+message Status {
+    int64 count = 1;
+}
