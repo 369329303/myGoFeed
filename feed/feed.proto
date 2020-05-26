@@ -3,12 +3,18 @@ syntax = "proto3";
 package feed;
 
 service RSS {
+    rpc GetAllFeedNames (OK) returns (stream Feed) {}
     rpc GetFeed (Feed) returns (stream Story) {}
     rpc GetFeedGroup (FeedGroup) returns (stream Story) {}
     rpc AddFeed (Feed) returns (Status) {}
     rpc AddFeedGroup (FeedGroup) returns (Status) {}
     rpc SendFeeds (stream Feed) returns (Status) {}
     rpc SubscribeAndRefresh (stream Feed) returns (stream Story) {}
+    rpc DeleteFeeds (stream Feed) returns (Status) {}
+}
+
+message OK {
+    bool OK = 1;
 }
 
 message Feed {
@@ -30,6 +36,7 @@ message Story {
     string Title = 1;
     string Link = 2;
     string Description = 3;
+    string PubTime = 4;
 }
 
 message Status {

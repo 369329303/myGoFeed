@@ -24,6 +24,45 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type OK struct {
+	OK                   bool     `protobuf:"varint,1,opt,name=OK,proto3" json:"OK,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *OK) Reset()         { *m = OK{} }
+func (m *OK) String() string { return proto.CompactTextString(m) }
+func (*OK) ProtoMessage()    {}
+func (*OK) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d7a672c1337cb5ac, []int{0}
+}
+
+func (m *OK) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_OK.Unmarshal(m, b)
+}
+func (m *OK) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OK.Marshal(b, m, deterministic)
+}
+func (m *OK) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OK.Merge(m, src)
+}
+func (m *OK) XXX_Size() int {
+	return xxx_messageInfo_OK.Size(m)
+}
+func (m *OK) XXX_DiscardUnknown() {
+	xxx_messageInfo_OK.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OK proto.InternalMessageInfo
+
+func (m *OK) GetOK() bool {
+	if m != nil {
+		return m.OK
+	}
+	return false
+}
+
 type Feed struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
 	Start                int64    `protobuf:"varint,2,opt,name=Start,proto3" json:"Start,omitempty"`
@@ -39,7 +78,7 @@ func (m *Feed) Reset()         { *m = Feed{} }
 func (m *Feed) String() string { return proto.CompactTextString(m) }
 func (*Feed) ProtoMessage()    {}
 func (*Feed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d7a672c1337cb5ac, []int{0}
+	return fileDescriptor_d7a672c1337cb5ac, []int{1}
 }
 
 func (m *Feed) XXX_Unmarshal(b []byte) error {
@@ -109,7 +148,7 @@ func (m *FeedGroup) Reset()         { *m = FeedGroup{} }
 func (m *FeedGroup) String() string { return proto.CompactTextString(m) }
 func (*FeedGroup) ProtoMessage()    {}
 func (*FeedGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d7a672c1337cb5ac, []int{1}
+	return fileDescriptor_d7a672c1337cb5ac, []int{2}
 }
 
 func (m *FeedGroup) XXX_Unmarshal(b []byte) error {
@@ -162,6 +201,7 @@ type Story struct {
 	Title                string   `protobuf:"bytes,1,opt,name=Title,proto3" json:"Title,omitempty"`
 	Link                 string   `protobuf:"bytes,2,opt,name=Link,proto3" json:"Link,omitempty"`
 	Description          string   `protobuf:"bytes,3,opt,name=Description,proto3" json:"Description,omitempty"`
+	PubTime              string   `protobuf:"bytes,4,opt,name=PubTime,proto3" json:"PubTime,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -171,7 +211,7 @@ func (m *Story) Reset()         { *m = Story{} }
 func (m *Story) String() string { return proto.CompactTextString(m) }
 func (*Story) ProtoMessage()    {}
 func (*Story) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d7a672c1337cb5ac, []int{2}
+	return fileDescriptor_d7a672c1337cb5ac, []int{3}
 }
 
 func (m *Story) XXX_Unmarshal(b []byte) error {
@@ -213,6 +253,13 @@ func (m *Story) GetDescription() string {
 	return ""
 }
 
+func (m *Story) GetPubTime() string {
+	if m != nil {
+		return m.PubTime
+	}
+	return ""
+}
+
 type Status struct {
 	Count                int64    `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -224,7 +271,7 @@ func (m *Status) Reset()         { *m = Status{} }
 func (m *Status) String() string { return proto.CompactTextString(m) }
 func (*Status) ProtoMessage()    {}
 func (*Status) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d7a672c1337cb5ac, []int{3}
+	return fileDescriptor_d7a672c1337cb5ac, []int{4}
 }
 
 func (m *Status) XXX_Unmarshal(b []byte) error {
@@ -253,6 +300,7 @@ func (m *Status) GetCount() int64 {
 }
 
 func init() {
+	proto.RegisterType((*OK)(nil), "feed.OK")
 	proto.RegisterType((*Feed)(nil), "feed.Feed")
 	proto.RegisterType((*FeedGroup)(nil), "feed.FeedGroup")
 	proto.RegisterType((*Story)(nil), "feed.Story")
@@ -264,29 +312,32 @@ func init() {
 }
 
 var fileDescriptor_d7a672c1337cb5ac = []byte{
-	// 338 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0x41, 0x4f, 0xf2, 0x40,
-	0x10, 0x65, 0xd9, 0x02, 0xe9, 0x40, 0xf2, 0x7d, 0x59, 0x3d, 0x34, 0xc6, 0x98, 0xa6, 0x89, 0xa6,
-	0x5e, 0x90, 0xa8, 0x7f, 0x80, 0x44, 0xe4, 0x62, 0x3c, 0x74, 0xf9, 0x03, 0xc0, 0x0e, 0xb1, 0x51,
-	0xb6, 0xa4, 0xdd, 0x3d, 0xe8, 0x2f, 0xf1, 0xe7, 0x9a, 0x99, 0x16, 0x11, 0x89, 0xdc, 0xde, 0x7b,
-	0x3b, 0xf3, 0xde, 0xcc, 0xb4, 0x00, 0x2b, 0x44, 0x33, 0xdc, 0x94, 0x85, 0x2b, 0x54, 0x40, 0x38,
-	0xf9, 0x80, 0xe0, 0x11, 0xd1, 0x28, 0x05, 0xc1, 0xf3, 0x7c, 0x8d, 0x91, 0x88, 0x45, 0x1a, 0x66,
-	0x8c, 0xd5, 0x29, 0x74, 0xb4, 0x9b, 0x97, 0x2e, 0x6a, 0xc7, 0x22, 0x95, 0x59, 0x4d, 0xd4, 0x7f,
-	0x90, 0x13, 0x6b, 0x22, 0xc9, 0x1a, 0x41, 0x75, 0x0e, 0x21, 0x3f, 0xcd, 0xf2, 0x35, 0x46, 0x01,
-	0x1b, 0xec, 0x04, 0x15, 0x41, 0x6f, 0x62, 0x0d, 0xbf, 0x75, 0xf8, 0x6d, 0x4b, 0x13, 0x0f, 0x21,
-	0x65, 0x4f, 0xcb, 0xc2, 0x6f, 0xc8, 0x84, 0x08, 0x05, 0x57, 0x91, 0x88, 0x25, 0x99, 0x7c, 0x0b,
-	0x3c, 0x9e, 0x5f, 0x57, 0xcd, 0x24, 0x8c, 0xf7, 0x63, 0xe5, 0x91, 0xd8, 0x60, 0x3f, 0x56, 0xd3,
-	0x5a, 0x45, 0xf9, 0x4e, 0xfb, 0xcd, 0x72, 0xf7, 0xb6, 0x5d, 0xba, 0x26, 0x14, 0xf5, 0x94, 0xdb,
-	0x57, 0x8e, 0x0a, 0x33, 0xc6, 0x2a, 0x86, 0xfe, 0x03, 0x56, 0xcb, 0x32, 0xdf, 0xb8, 0xbc, 0xb0,
-	0x4d, 0xd8, 0x4f, 0x29, 0xb9, 0x80, 0xae, 0x76, 0x73, 0xe7, 0x2b, 0x72, 0x5d, 0x16, 0xde, 0x3a,
-	0x76, 0x95, 0x59, 0x4d, 0x6e, 0x3f, 0xdb, 0x20, 0x33, 0xad, 0xd5, 0x15, 0xf4, 0xa6, 0xe8, 0xf8,
-	0xe4, 0x30, 0xe4, 0xaf, 0x41, 0xf8, 0xac, 0x5f, 0x63, 0x9e, 0x2b, 0x69, 0x8d, 0x84, 0x1a, 0xc1,
-	0xa0, 0xa9, 0xab, 0xcf, 0xf3, 0x6f, 0x57, 0xcc, 0xc2, 0x61, 0xc7, 0x25, 0xf4, 0xc6, 0xc6, 0x1c,
-	0x38, 0x0f, 0xb6, 0x75, 0x34, 0x5c, 0xd2, 0x52, 0x37, 0x30, 0x68, 0xca, 0xfe, 0x30, 0xfe, 0xdd,
-	0x70, 0x0d, 0xa1, 0x46, 0xcb, 0x1d, 0xd5, 0x31, 0xe7, 0x54, 0xa8, 0x7b, 0x38, 0xd1, 0x7e, 0x41,
-	0x47, 0x59, 0xe0, 0xd8, 0x9a, 0x0c, 0x57, 0x25, 0x56, 0x2f, 0x47, 0x16, 0x4d, 0xc5, 0x48, 0x2c,
-	0xba, 0xfc, 0x3f, 0xde, 0x7d, 0x05, 0x00, 0x00, 0xff, 0xff, 0x59, 0x87, 0x1b, 0x7f, 0x9d, 0x02,
-	0x00, 0x00,
+	// 392 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xdd, 0x6a, 0xe2, 0x50,
+	0x10, 0xc7, 0x3d, 0x49, 0xfc, 0xc8, 0x28, 0xeb, 0x72, 0xd6, 0x8b, 0x20, 0xcb, 0x12, 0x02, 0xbb,
+	0x64, 0x11, 0x5c, 0xd9, 0xf6, 0x05, 0x84, 0x5a, 0x2f, 0x2c, 0xb5, 0x24, 0xbe, 0x80, 0x31, 0x23,
+	0x0d, 0xcd, 0x87, 0x24, 0x27, 0x17, 0xed, 0x63, 0xf7, 0x09, 0xca, 0x4c, 0x62, 0xd5, 0x4a, 0xa5,
+	0x37, 0xe1, 0x3f, 0x1f, 0x67, 0x7e, 0xe7, 0x7f, 0x86, 0x00, 0x6c, 0x11, 0xc3, 0xf1, 0x2e, 0xcf,
+	0x54, 0x26, 0x0d, 0xd2, 0xce, 0x00, 0xb4, 0xe5, 0x42, 0x7e, 0xa3, 0xaf, 0x25, 0x6c, 0xe1, 0x76,
+	0x3c, 0x6d, 0xb9, 0x70, 0x5e, 0xc0, 0xb8, 0x45, 0x0c, 0xa5, 0x04, 0xe3, 0x7e, 0x9d, 0x20, 0x57,
+	0x4c, 0x8f, 0xb5, 0x1c, 0x40, 0xd3, 0x57, 0xeb, 0x5c, 0x59, 0x9a, 0x2d, 0x5c, 0xdd, 0xab, 0x02,
+	0xf9, 0x1d, 0xf4, 0x59, 0x1a, 0x5a, 0x3a, 0xe7, 0x48, 0xca, 0x9f, 0x60, 0x72, 0x69, 0x15, 0x25,
+	0x68, 0x19, 0x3c, 0xe0, 0x90, 0x90, 0x16, 0xb4, 0x67, 0x69, 0xc8, 0xb5, 0x26, 0xd7, 0xf6, 0xa1,
+	0x53, 0x82, 0x49, 0xec, 0x79, 0x9e, 0x95, 0x3b, 0x1a, 0x42, 0x01, 0x81, 0x0b, 0x4b, 0xd8, 0x3a,
+	0x0d, 0x79, 0x4f, 0xf0, 0xf5, 0xca, 0xa4, 0xa8, 0x6f, 0xc2, 0xfa, 0x14, 0xab, 0x5f, 0xc0, 0x1a,
+	0xa7, 0xd8, 0x84, 0x6c, 0x65, 0xf9, 0x33, 0xf9, 0x5b, 0x45, 0x2a, 0xde, 0x9b, 0xae, 0x02, 0x42,
+	0xdd, 0x45, 0xe9, 0x13, 0xa3, 0x4c, 0x8f, 0xb5, 0xb4, 0xa1, 0x7b, 0x83, 0xc5, 0x26, 0x8f, 0x76,
+	0x2a, 0xca, 0xd2, 0x1a, 0x76, 0x9c, 0x22, 0xdc, 0x43, 0x19, 0x1c, 0xe3, 0xea, 0xd0, 0xf9, 0x05,
+	0x2d, 0x5f, 0xad, 0x55, 0x59, 0x10, 0x6f, 0x93, 0x95, 0xa9, 0x62, 0x9e, 0xee, 0x55, 0xc1, 0xff,
+	0x57, 0x0d, 0x74, 0xcf, 0xf7, 0xe5, 0x08, 0xfa, 0x73, 0x54, 0xd3, 0x38, 0x3e, 0xb8, 0xee, 0x8c,
+	0x79, 0x8b, 0xcb, 0xc5, 0x10, 0x2a, 0x45, 0x25, 0xa7, 0x31, 0x11, 0xf2, 0x0f, 0xb4, 0xe7, 0xa8,
+	0x78, 0x73, 0x47, 0xa5, 0x61, 0xb7, 0xd2, 0x6c, 0x8f, 0xfb, 0x26, 0xd0, 0xab, 0xfb, 0xaa, 0x57,
+	0xee, 0x1f, 0x9a, 0x39, 0x71, 0x7e, 0xe2, 0x37, 0xb4, 0xa7, 0x61, 0x78, 0x36, 0xb9, 0xb7, 0xef,
+	0x23, 0x27, 0x4e, 0x43, 0xfe, 0x83, 0x5e, 0xdd, 0xf6, 0xc9, 0xe0, 0x8f, 0x07, 0xfe, 0x82, 0xe9,
+	0x63, 0xca, 0x27, 0x8a, 0x4b, 0x93, 0x5d, 0x21, 0xaf, 0xe1, 0x87, 0x5f, 0x06, 0xf4, 0xb6, 0x01,
+	0x4e, 0xd3, 0xd0, 0xc3, 0x6d, 0x8e, 0xc5, 0xe3, 0x05, 0xa3, 0xae, 0x98, 0x08, 0x39, 0xa2, 0x1d,
+	0xc5, 0xa8, 0xf0, 0x0b, 0x88, 0xa0, 0xc5, 0x7f, 0xc6, 0xd5, 0x5b, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0xf8, 0x8b, 0xda, 0xb2, 0x27, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -301,12 +352,14 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RSSClient interface {
+	GetAllFeedNames(ctx context.Context, in *OK, opts ...grpc.CallOption) (RSS_GetAllFeedNamesClient, error)
 	GetFeed(ctx context.Context, in *Feed, opts ...grpc.CallOption) (RSS_GetFeedClient, error)
 	GetFeedGroup(ctx context.Context, in *FeedGroup, opts ...grpc.CallOption) (RSS_GetFeedGroupClient, error)
 	AddFeed(ctx context.Context, in *Feed, opts ...grpc.CallOption) (*Status, error)
 	AddFeedGroup(ctx context.Context, in *FeedGroup, opts ...grpc.CallOption) (*Status, error)
 	SendFeeds(ctx context.Context, opts ...grpc.CallOption) (RSS_SendFeedsClient, error)
 	SubscribeAndRefresh(ctx context.Context, opts ...grpc.CallOption) (RSS_SubscribeAndRefreshClient, error)
+	DeleteFeeds(ctx context.Context, opts ...grpc.CallOption) (RSS_DeleteFeedsClient, error)
 }
 
 type rSSClient struct {
@@ -317,8 +370,40 @@ func NewRSSClient(cc grpc.ClientConnInterface) RSSClient {
 	return &rSSClient{cc}
 }
 
+func (c *rSSClient) GetAllFeedNames(ctx context.Context, in *OK, opts ...grpc.CallOption) (RSS_GetAllFeedNamesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[0], "/feed.RSS/GetAllFeedNames", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &rSSGetAllFeedNamesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type RSS_GetAllFeedNamesClient interface {
+	Recv() (*Feed, error)
+	grpc.ClientStream
+}
+
+type rSSGetAllFeedNamesClient struct {
+	grpc.ClientStream
+}
+
+func (x *rSSGetAllFeedNamesClient) Recv() (*Feed, error) {
+	m := new(Feed)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *rSSClient) GetFeed(ctx context.Context, in *Feed, opts ...grpc.CallOption) (RSS_GetFeedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[0], "/feed.RSS/GetFeed", opts...)
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[1], "/feed.RSS/GetFeed", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -350,7 +435,7 @@ func (x *rSSGetFeedClient) Recv() (*Story, error) {
 }
 
 func (c *rSSClient) GetFeedGroup(ctx context.Context, in *FeedGroup, opts ...grpc.CallOption) (RSS_GetFeedGroupClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[1], "/feed.RSS/GetFeedGroup", opts...)
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[2], "/feed.RSS/GetFeedGroup", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -400,7 +485,7 @@ func (c *rSSClient) AddFeedGroup(ctx context.Context, in *FeedGroup, opts ...grp
 }
 
 func (c *rSSClient) SendFeeds(ctx context.Context, opts ...grpc.CallOption) (RSS_SendFeedsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[2], "/feed.RSS/SendFeeds", opts...)
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[3], "/feed.RSS/SendFeeds", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -434,7 +519,7 @@ func (x *rSSSendFeedsClient) CloseAndRecv() (*Status, error) {
 }
 
 func (c *rSSClient) SubscribeAndRefresh(ctx context.Context, opts ...grpc.CallOption) (RSS_SubscribeAndRefreshClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[3], "/feed.RSS/SubscribeAndRefresh", opts...)
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[4], "/feed.RSS/SubscribeAndRefresh", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -464,20 +549,59 @@ func (x *rSSSubscribeAndRefreshClient) Recv() (*Story, error) {
 	return m, nil
 }
 
+func (c *rSSClient) DeleteFeeds(ctx context.Context, opts ...grpc.CallOption) (RSS_DeleteFeedsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_RSS_serviceDesc.Streams[5], "/feed.RSS/DeleteFeeds", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &rSSDeleteFeedsClient{stream}
+	return x, nil
+}
+
+type RSS_DeleteFeedsClient interface {
+	Send(*Feed) error
+	CloseAndRecv() (*Status, error)
+	grpc.ClientStream
+}
+
+type rSSDeleteFeedsClient struct {
+	grpc.ClientStream
+}
+
+func (x *rSSDeleteFeedsClient) Send(m *Feed) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *rSSDeleteFeedsClient) CloseAndRecv() (*Status, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(Status)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // RSSServer is the server API for RSS service.
 type RSSServer interface {
+	GetAllFeedNames(*OK, RSS_GetAllFeedNamesServer) error
 	GetFeed(*Feed, RSS_GetFeedServer) error
 	GetFeedGroup(*FeedGroup, RSS_GetFeedGroupServer) error
 	AddFeed(context.Context, *Feed) (*Status, error)
 	AddFeedGroup(context.Context, *FeedGroup) (*Status, error)
 	SendFeeds(RSS_SendFeedsServer) error
 	SubscribeAndRefresh(RSS_SubscribeAndRefreshServer) error
+	DeleteFeeds(RSS_DeleteFeedsServer) error
 }
 
 // UnimplementedRSSServer can be embedded to have forward compatible implementations.
 type UnimplementedRSSServer struct {
 }
 
+func (*UnimplementedRSSServer) GetAllFeedNames(req *OK, srv RSS_GetAllFeedNamesServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllFeedNames not implemented")
+}
 func (*UnimplementedRSSServer) GetFeed(req *Feed, srv RSS_GetFeedServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetFeed not implemented")
 }
@@ -496,9 +620,33 @@ func (*UnimplementedRSSServer) SendFeeds(srv RSS_SendFeedsServer) error {
 func (*UnimplementedRSSServer) SubscribeAndRefresh(srv RSS_SubscribeAndRefreshServer) error {
 	return status.Errorf(codes.Unimplemented, "method SubscribeAndRefresh not implemented")
 }
+func (*UnimplementedRSSServer) DeleteFeeds(srv RSS_DeleteFeedsServer) error {
+	return status.Errorf(codes.Unimplemented, "method DeleteFeeds not implemented")
+}
 
 func RegisterRSSServer(s *grpc.Server, srv RSSServer) {
 	s.RegisterService(&_RSS_serviceDesc, srv)
+}
+
+func _RSS_GetAllFeedNames_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(OK)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(RSSServer).GetAllFeedNames(m, &rSSGetAllFeedNamesServer{stream})
+}
+
+type RSS_GetAllFeedNamesServer interface {
+	Send(*Feed) error
+	grpc.ServerStream
+}
+
+type rSSGetAllFeedNamesServer struct {
+	grpc.ServerStream
+}
+
+func (x *rSSGetAllFeedNamesServer) Send(m *Feed) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _RSS_GetFeed_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -631,6 +779,32 @@ func (x *rSSSubscribeAndRefreshServer) Recv() (*Feed, error) {
 	return m, nil
 }
 
+func _RSS_DeleteFeeds_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(RSSServer).DeleteFeeds(&rSSDeleteFeedsServer{stream})
+}
+
+type RSS_DeleteFeedsServer interface {
+	SendAndClose(*Status) error
+	Recv() (*Feed, error)
+	grpc.ServerStream
+}
+
+type rSSDeleteFeedsServer struct {
+	grpc.ServerStream
+}
+
+func (x *rSSDeleteFeedsServer) SendAndClose(m *Status) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *rSSDeleteFeedsServer) Recv() (*Feed, error) {
+	m := new(Feed)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _RSS_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "feed.RSS",
 	HandlerType: (*RSSServer)(nil),
@@ -645,6 +819,11 @@ var _RSS_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllFeedNames",
+			Handler:       _RSS_GetAllFeedNames_Handler,
+			ServerStreams: true,
+		},
 		{
 			StreamName:    "GetFeed",
 			Handler:       _RSS_GetFeed_Handler,
@@ -664,6 +843,11 @@ var _RSS_serviceDesc = grpc.ServiceDesc{
 			StreamName:    "SubscribeAndRefresh",
 			Handler:       _RSS_SubscribeAndRefresh_Handler,
 			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "DeleteFeeds",
+			Handler:       _RSS_DeleteFeeds_Handler,
 			ClientStreams: true,
 		},
 	},

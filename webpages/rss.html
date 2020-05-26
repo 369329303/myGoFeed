@@ -1,0 +1,122 @@
+<html>
+    <header>
+        <title>RSS 阅读器</title>
+    </header>
+    <body>
+        <div>
+            <form id="rss_feeds">
+                <lable>起始记录：</lable><input type='number' name="start" value='1'>
+                <lable>终止记录：</lable><input type='number' name="end" value='10'>
+                <lable>起始时间：</lable><input type='datetime-local' name="startTime">
+                <lable>终止时间：</lable><input type='datetime-local' name="endTime">
+                <button id="filterFeeds">确定</button>
+                <button id='deleteChecked'>删除勾选的订阅</button>
+            </form>
+        </div>
+        <div>
+            <textarea id="feedNames"></textarea>
+            <button id="addAndRefresh">添加订阅并刷新</button>
+        </div>
+        <div>
+            <ol id="stories"></ol>
+        </div>
+    </body>
+</html>
+
+<script src="./jquery-3.5.1.min.js"></script>
+<script>
+
+$(document).ready(function() {
+    $.ajax({
+        type: "post",
+        url: 'allFeedNamesAndStories',
+        async: true,
+        dataType: "json",
+        data: "",
+        success: function (fNAS) {
+            var feedNames = fNAS.FeedNames;
+            var list = "";
+            for (feedName of feedNames) {
+                list += "<input type='checkbox' name='feedName' checked value='" + feedName + "'>" + 
+                    "<lable>" + feedName + "</lable><br>";
+            }
+
+            $("#rss_feeds").prepend(list);
+            showStories(fNAS.Stories)
+
+        },
+        error: function (err) {
+            alert(err);
+        }
+    });
+});
+
+function showStories(stories) {
+    var list = "<ol>";
+    for (story of stories) {
+        list += "<li><a href='" + story.Link + "'>" + story.Title + "</a> [" + new URL(story.Link).hostname + "] " + story.PubTime + "</li>";
+    }
+    list += "</ol>";
+
+    $("#stories").html(list);
+}
+
+
+$("#filterFeeds").click(function() {
+    $.ajax({
+        type: "post",
+        url: "filterFeeds",
+        async: true,
+        dataType: "json",
+        data: $("#rss_feeds").serialize(),
+        success: function(stories) {
+            showStories(stories);
+        },
+        error: function(err) {
+            console.log(err)
+        }
+    });
+    return false;
+});
+
+
+$("#addAndRefresh").click(function() {
+    $.ajax({
+        type: "post",
+        url: "addAndRefresh",
+        async: true,
+        data: {"feedNames": $("#feedNames").val()},
+        dataType: "json",
+        success: function(stories) {
+            showStories(stories);
+        },
+        error: function (err) {
+            alert(err);
+        }
+    })
+});
+
+
+$("#deleteChecked").click(function() {
+    // var feedNames = $("input:checkbox:checked").map(function() {
+    //     return $(this).next("lable").text();
+    // }).get();
+    $.ajax({
+        type: "post",
+        url: "/deleteChecked",
+        async: true,
+        data: $("#rss_feeds").serialize(),
+        dataType: "json",
+        success: function (OK) {
+            $("input:checkbox:checked").map(function() {
+                $(this).next("lable").remove();
+                $(this).remove();
+            });
+        },
+        error: function (err) {
+            alert(err.status);
+        }
+    });
+    return false
+});
+</script>
