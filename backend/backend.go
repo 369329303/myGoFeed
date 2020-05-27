@@ -30,6 +30,9 @@ const (
 // 获取所有的Feed名称 （服务端流式RPC）
 func (rb *rssBackend) GetAllFeedNames(req *feed.OK, srv feed.RSS_GetAllFeedNamesServer) error {
 	feedNames, err := r.SMembers("feeds").Result()
+	if err == redis.Nil {
+		return nil
+	}
 	if err != nil {
 		return err
 	}
@@ -225,7 +228,9 @@ func UpdateDB(feedNames []string) {
 			defer wg.Done()
 			feed, err := parser.ParseURL(url)
 			if err != nil {
-				log.Fatalf("parser.ParseURL failed: %v", err)
+				log.Printf("parser.ParseURL failed: %v", err)
+				log.Printf("Probablely blocked by GFW.:(")
+				return
 			}
 
 			// 获取数据库列表中最新的元素
@@ -272,7 +277,6 @@ func UpdateDB(feedNames []string) {
 
 func main() {
 	r = redis.NewClient(&redis.Options{})
-	// UpdateDB([]string{"http://www.zhihu.com/rss"})
 	go func() {
 		time.Sleep(5 * time.Minute)
 		UpdateDB([]string{})
