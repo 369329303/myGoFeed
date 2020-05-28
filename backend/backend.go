@@ -273,6 +273,7 @@ func UpdateDB(feedNames []string) {
 		}(feedName)
 	}
 	wg.Wait()
+	return
 }
 
 func main() {

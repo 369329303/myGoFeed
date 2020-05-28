@@ -5,10 +5,10 @@
     <body>
         <div>
             <form id="rss_feeds">
-                <lable>起始记录：</lable><input type='number' name="start" value='1'>
-                <lable>终止记录：</lable><input type='number' name="end" value='10'>
-                <lable>起始时间：</lable><input type='datetime-local' name="startTime">
-                <lable>终止时间：</lable><input type='datetime-local' name="endTime">
+                <lable>起始记录：</lable><input type='number' name="start" value='1'><br>
+                <lable>终止记录：</lable><input type='number' name="end" value='10'><br>
+                <lable>起始时间：</lable><input type='datetime-local' name="startTime"><br>
+                <lable>终止时间：</lable><input type='datetime-local' name="endTime"><br>
                 <button id="filterFeeds">确定</button>
                 <button id='deleteChecked'>删除勾选的订阅</button>
             </form>
@@ -17,6 +17,7 @@
             <textarea id="feedNames"></textarea>
             <button id="addAndRefresh">添加订阅并刷新</button>
         </div>
+        <div id="waiting">请稍候...</div>
         <div>
             <ol id="stories"></ol>
         </div>
@@ -26,6 +27,14 @@
 <script src="./jquery-3.5.1.min.js"></script>
 <script>
 
+function beforeSend() {
+    $("#waiting").show();
+}
+
+function complete() {
+    $("#waiting").hide()
+}
+
 $(document).ready(function() {
     $.ajax({
         type: "post",
@@ -33,23 +42,34 @@ $(document).ready(function() {
         async: true,
         dataType: "json",
         data: "",
+        beforeSend: beforeSend,
+        complete: complete,
         success: function (fNAS) {
-            var feedNames = fNAS.FeedNames;
-            var list = "";
-            for (feedName of feedNames) {
-                list += "<input type='checkbox' name='feedName' checked value='" + feedName + "'>" + 
-                    "<lable>" + feedName + "</lable><br>";
-            }
-
-            $("#rss_feeds").prepend(list);
-            showStories(fNAS.Stories)
+            // $("#waiting").show();
+            showFeeds(fNAS.FeedNames);
+            showStories(fNAS.Stories);
+            // $("#waiting").hide();
 
         },
         error: function (err) {
             alert(err);
-        }
+        },
     });
 });
+
+function showFeeds(feedNames) {
+    var allFeedNames = $("input:checkbox").map(function() {return $(this).val();}).get()
+    var list = "";
+    for (feedName of feedNames) {
+        if (allFeedNames.includes(feedName)) {
+            $("#rss_feeds input[value='" + feedName + "']").prop("checked", true);
+            continue;
+        }
+        list += "<input type='checkbox' name='feedName' checked value='" + feedName + "'>" + 
+            "<lable>" + feedName + "</lable><br>";
+    }
+    $("#rss_feeds").prepend(list);
+}
 
 function showStories(stories) {
     var list = "<ol>";
@@ -69,6 +89,8 @@ $("#filterFeeds").click(function() {
         async: true,
         dataType: "json",
         data: $("#rss_feeds").serialize(),
+        beforeSend: beforeSend,
+        complete: complete,
         success: function(stories) {
             showStories(stories);
         },
@@ -87,7 +109,13 @@ $("#addAndRefresh").click(function() {
         async: true,
         data: {"feedNames": $("#feedNames").val()},
         dataType: "json",
+        beforeSend: beforeSend,
+        complete: complete,
         success: function(stories) {
+            $("input:checkbox:checked").map(function() {
+                $(this).prop("checked", false);
+            });
+            showFeeds($("#feedNames").val().split("\n"));
             showStories(stories);
         },
         error: function (err) {
@@ -98,9 +126,6 @@ $("#addAndRefresh").click(function() {
 
 
 $("#deleteChecked").click(function() {
-    // var feedNames = $("input:checkbox:checked").map(function() {
-    //     return $(this).next("lable").text();
-    // }).get();
     $.ajax({
         type: "post",
         url: "/deleteChecked",
@@ -117,6 +142,6 @@ $("#deleteChecked").click(function() {
             alert(err.status);
         }
     });
-    return false
+    return false;
 });
 </script>
