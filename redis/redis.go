@@ -85,7 +85,7 @@ func UpdateDB(feedNames []string) {
 func main() {
 	r = redis.NewClient(&redis.Options{
 		Addr:     "localhost:9000",
-		Password: "sOmE_sEcUrE_pAsS",
+		Password: "tEyFf2C4tXMyEZC4",
 	})
 	for {
 		time.Sleep(5 * time.Minute)

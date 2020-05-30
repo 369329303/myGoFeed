@@ -1,9 +1,10 @@
 version: "3"
-services: 
-    redis:
-        image: redis
-        ports:
-            - "9000:6379"
-        # volumes:
-            # - ./redis.conf:/usr/local/etc/redis/redis.conf
-        command: ["redis-server", "--requirepass", "sOmE_sEcUrE_pAsS"]
+services:
+  redis:
+    image: redis
+    ports:
+      - "9000:6379"
+    # volumes:
+      # - ./redis.conf:/usr/local/etc/redis/redis.conf
+      # - ./data:/data
+    command: ["redis-server", "--requirepass", "tEyFf2C4tXMyEZC4"]

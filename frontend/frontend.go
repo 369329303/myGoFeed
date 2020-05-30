@@ -112,10 +112,7 @@ func allFeedNamesAndStoriesHandler(ginCtx *gin.Context) {
 		story, err := getFeedGroupClient.Recv()
 		if err == io.EOF {
 			sort.Slice(stories, func(i, j int) bool {
-				if stories[i].PubTime > stories[j].PubTime {
-					return true
-				}
-				return false
+				return stories[i].PubTime > stories[j].PubTime 
 			})
 			fNAS := FeedNamesAndStories{
 				FeedNames: feedNames,
@@ -162,6 +159,7 @@ func deleteCheckedHandler(ginCtx *gin.Context) {
 func addAndRefreshHandler(ginCtx *gin.Context) {
 	if ginCtx.PostForm("feedNames") == "" {
 		ginCtx.String(http.StatusBadRequest, "Empty parameters")
+		log.Println("--------------------")
 		return
 	}
 

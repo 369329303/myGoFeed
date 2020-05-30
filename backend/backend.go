@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -263,6 +264,10 @@ func UpdateDB(feedNames []string) {
 					log.Fatalf("json.Unmarshal failed: %v", err)
 				}
 
+				// 判断之前先从新到旧的顺序排序feed.Items
+				sort.Slice(feed.Items, func(i, j int) bool {
+					return feed.Items[i].PublishedParsed.After(*feed.Items[j].PublishedParsed)
+				})
 				for i := len(feed.Items) - 1; i >= 0; i-- {
 					if feed.Items[i].PublishedParsed.After(*headItem.PublishedParsed) {
 						data, err := json.Marshal(feed.Items[i])
@@ -284,13 +289,9 @@ func UpdateDB(feedNames []string) {
 
 func main() {
 	r = redis.NewClient(&redis.Options{
-		Addr: "localhost:9000",
-		Password: "sOmE_sEcUrE_pAsS",
+		Addr:     "localhost:9000",
+		Password: "tEyFf2C4tXMyEZC4",
 	})
-	// go func() {
-	// 	UpdateDB([]string{})
-	// 	time.Sleep(5 * time.Minute)
-	// }()
 	lis, err := net.Listen("tcp", "localhost:8888")
 	if err != nil {
 		log.Fatalf("net.Listen failed: %v\n", err)
