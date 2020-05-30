@@ -187,6 +187,8 @@ func addAndRefreshHandler(ginCtx *gin.Context) {
 			}
 			if err != nil {
 				log.Printf("subAndRefClient.Recv failed %v", err)
+				ginCtx.String(http.StatusGatewayTimeout, "Timeout")
+				return
 			}
 			stories = append(stories, story)
 		}

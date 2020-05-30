@@ -283,11 +283,14 @@ func UpdateDB(feedNames []string) {
 }
 
 func main() {
-	r = redis.NewClient(&redis.Options{})
-	go func() {
-		time.Sleep(5 * time.Minute)
-		UpdateDB([]string{})
-	}()
+	r = redis.NewClient(&redis.Options{
+		Addr: "localhost:9000",
+		Password: "sOmE_sEcUrE_pAsS",
+	})
+	// go func() {
+	// 	UpdateDB([]string{})
+	// 	time.Sleep(5 * time.Minute)
+	// }()
 	lis, err := net.Listen("tcp", "localhost:8888")
 	if err != nil {
 		log.Fatalf("net.Listen failed: %v\n", err)
