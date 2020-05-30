@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"sort"
 	"sync"
 	"time"
 
@@ -38,6 +39,11 @@ func UpdateDB(feedNames []string) {
 				log.Printf("Probablely blocked by GFW.:(")
 				return
 			}
+
+			// 按照从新到旧的顺序排序feed.Items
+			sort.Slice(feed.Items, func(i, j int) bool {
+				return feed.Items[i].PublishedParsed.After(*feed.Items[j].PublishedParsed)
+			})
 
 			// 获取数据库列表中最新的元素
 			headStr, err := r.LIndex(url, 0).Result()
@@ -88,7 +94,7 @@ func main() {
 		Password: "tEyFf2C4tXMyEZC4",
 	})
 	for {
-		time.Sleep(5 * time.Minute)
 		UpdateDB([]string{})
+		time.Sleep(5 * time.Minute)
 	}
 }

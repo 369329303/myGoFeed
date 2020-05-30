@@ -159,7 +159,6 @@ func deleteCheckedHandler(ginCtx *gin.Context) {
 func addAndRefreshHandler(ginCtx *gin.Context) {
 	if ginCtx.PostForm("feedNames") == "" {
 		ginCtx.String(http.StatusBadRequest, "Empty parameters")
-		log.Println("--------------------")
 		return
 	}
 
