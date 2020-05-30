@@ -5,6 +5,7 @@
     <body>
         <div>
             <form id="rss_feeds">
+                <lable>关键字：</lable><input type='text' id="keywords" name="keywords"><br>
                 <lable>起始记录：</lable><input type='number' name="start" value='1'><br>
                 <lable>终止记录：</lable><input type='number' name="end" value='10'><br>
                 <lable>起始时间：</lable><input type='datetime-local' name="startTime"><br>
@@ -74,11 +75,23 @@ function showFeeds(feedNames) {
 function showStories(stories) {
     var list = "<ol>";
     for (story of stories) {
-        list += "<li><a href='" + story.Link + "'>" + story.Title + "</a> [" + new URL(story.Link).hostname + "] " + story.PubTime + "</li>";
+        list += "<li><a target='_blank' href='" + story.Link + "'>" + story.Title + "</a> [" + new URL(story.Link).hostname + "] " + story.PubTime + "</li>";
     }
     list += "</ol>";
 
     $("#stories").html(list);
+}
+
+function highlightKeywords(keywords) {
+    var keywordsRegex = keywords.replace(/ +/g, "|");
+    var re = new RegExp(keywordsRegex, "g")
+    console.log(keywordsRegex);
+    $("#stories a").map(function() {
+        var str = $(this).html().replace(re, function(x) {
+            return "<span style='color: #ff0000'>" + x + "</span>";
+        });
+        $(this).html(str);
+    });
 }
 
 
@@ -93,6 +106,7 @@ $("#filterFeeds").click(function() {
         complete: complete,
         success: function(stories) {
             showStories(stories);
+            highlightKeywords($("#keywords").val());
         },
         error: function(err) {
             console.log(err)

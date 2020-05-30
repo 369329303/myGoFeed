@@ -4,9 +4,9 @@
 
 ## 使用方法
 ```bash
-go run backend/backend.go
-go run frontend/frontend.go
-chromium http://localhost:8080/rss.html
+$ go run backend/backend.go
+$ go run frontend/frontend.go
+$ google-chrome http://localhost:8080/rss.html
 ```
 
 ## 实现原理

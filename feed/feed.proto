@@ -23,6 +23,7 @@ message Feed {
     int64 End = 3;
     string StartTime = 4;
     string EndTime = 5;
+    string Keywords = 6;
 }
 
 message FeedGroup {
@@ -30,6 +31,7 @@ message FeedGroup {
     int64 Nums = 2;
     string StartTime = 3;
     string EndTime = 4;
+    string Keywords = 5;
 }
 
 message Story {

@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/369329303/myGoFeed/feed"
 	"github.com/gin-gonic/gin"
@@ -56,9 +57,12 @@ func filterFeedsHandler(ginCtx *gin.Context) {
 		Nums:      int64(end - start + 1),
 		StartTime: ginCtx.PostForm("startTime"),
 		EndTime:   ginCtx.PostForm("endTime"),
+		Keywords:  ginCtx.PostForm("keywords"),
 	}
 
-	getFeedGroupClient, err := client.GetFeedGroup(context.Background(), &feedGroup)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	getFeedGroupClient, err := client.GetFeedGroup(ctx, &feedGroup)
 	if err != nil {
 		log.Fatalf("failed: %v", err)
 	}
@@ -79,7 +83,9 @@ func filterFeedsHandler(ginCtx *gin.Context) {
 
 func allFeedNamesAndStoriesHandler(ginCtx *gin.Context) {
 	ok := feed.OK{OK: true}
-	getAllFeedNamesClient, err := client.GetAllFeedNames(context.Background(), &ok)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	getAllFeedNamesClient, err := client.GetAllFeedNames(ctx, &ok)
 	if err != nil {
 		log.Fatalf("client.GetAllFeedNames failed: %v", err)
 	}
@@ -95,7 +101,9 @@ func allFeedNamesAndStoriesHandler(ginCtx *gin.Context) {
 		feedNames = append(feedNames, feedElem.Name)
 	}
 	feedGroup := feed.FeedGroup{FeedNames: feedNames, Nums: 10}
-	getFeedGroupClient, err := client.GetFeedGroup(context.Background(), &feedGroup)
+	ctx2, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	getFeedGroupClient, err := client.GetFeedGroup(ctx2, &feedGroup)
 	if err != nil {
 		log.Printf("client.GetFeedGroup failed: %v", err)
 	}
@@ -131,7 +139,9 @@ func deleteCheckedHandler(ginCtx *gin.Context) {
 		ginCtx.String(http.StatusBadRequest, "Empty parameters")
 		return
 	}
-	deleteFeedsClient, err := client.DeleteFeeds(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	deleteFeedsClient, err := client.DeleteFeeds(ctx)
 	if err != nil {
 		log.Fatalf("client.DeleteFeeds failed: %v", err)
 	}
@@ -156,7 +166,10 @@ func addAndRefreshHandler(ginCtx *gin.Context) {
 	}
 
 	feedNames := strings.Split(ginCtx.PostForm("feedNames"), "\n")
-	subAndRefClient, err := client.SubscribeAndRefresh(context.Background())
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	subAndRefClient, err := client.SubscribeAndRefresh(ctx)
 	if err != nil {
 		log.Fatalf("client.SubscribeAndRefresh failed: %v", err)
 	}

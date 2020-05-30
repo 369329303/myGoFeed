@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -165,14 +166,18 @@ func (rb *rssBackend) GetFeed(req *feed.Feed, srv feed.RSS_GetFeedServer) error 
 			break
 		}
 
-		story := feed.Story{
-			Title:       rec.Title,
-			Link:        rec.Link,
-			Description: rec.Description,
-			PubTime:     rec.PublishedParsed.String(),
-		}
-		if err = srv.Send(&story); err != nil {
-			log.Fatalf("srv.Send failed: %v", err)
+		for _, keyword := range strings.Split(req.Keywords, " ") {
+			if strings.Contains(rec.Title, keyword) {
+				story := feed.Story{
+					Title:       rec.Title,
+					Link:        rec.Link,
+					Description: rec.Description,
+					PubTime:     rec.PublishedParsed.String(),
+				}
+				if err = srv.Send(&story); err != nil {
+					log.Fatalf("srv.Send failed: %v", err)
+				}
+			}
 		}
 	}
 	return nil
@@ -198,6 +203,7 @@ func (rb *rssBackend) GetFeedGroup(req *feed.FeedGroup, srv feed.RSS_GetFeedGrou
 			End:       req.Nums/int64(len(req.FeedNames)) - 1,
 			StartTime: req.StartTime,
 			EndTime:   req.EndTime,
+			Keywords:  req.Keywords,
 		}
 		wg.Add(1)
 		go func() {
@@ -286,6 +292,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("net.Listen failed: %v\n", err)
 	}
+	log.Println("Listening and serving HTTP on localhost:8888")
 
 	grpcServer := grpc.NewServer()
 	feed.RegisterRSSServer(grpcServer, &rssBackend{})
